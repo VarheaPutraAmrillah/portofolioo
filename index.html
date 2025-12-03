@@ -7,19 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="stars-wrapper">
-        <!-- Bintang-bintang acak -->
-        <span class="star" style="top: 10%; left: 20%;"></span>
-        <span class="star" style="top: 30%; left: 80%;"></span>
-        <span class="star" style="top: 50%; left: 40%;"></span>
-        <span class="star" style="top: 70%; left: 60%;"></span>
-        <span class="star" style="top: 20%; left: 10%;"></span>
-        <span class="star" style="top: 80%; left: 25%;"></span>
-        <span class="star" style="top: 15%; left: 75%;"></span>
-        <span class="star" style="top: 60%; left: 5%;"></span>
-        <span class="star" style="top: 40%; left: 90%;"></span>
-        <span class="star" style="top: 85%; left: 50%;"></span>
-    </div>
+    <div id="stars"></div>
     <header>
         <h1 class="title">Rea's Space Station</h1>
         <h2 class="rocket">🚀</h2>
@@ -162,5 +150,64 @@
         observer.observe(section);
       });
     </script>
+    <!--Script bintang-->
+    <script>
+    const starContainer = document.getElementById('stars');
+    const starCount = 150;
+    const stars = [];
+
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.top = Math.random() * 100 + 'vh';
+      star.style.left = Math.random() * 100 + 'vw';
+      starContainer.appendChild(star);
+      stars.push(star);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      stars.forEach(star => {
+        const rect = star.getBoundingClientRect();
+        const starX = rect.left + rect.width / 2;
+        const starY = rect.top + rect.height / 2;
+
+        const dx = starX - e.clientX;
+        const dy = starY - e.clientY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const pushStrength = Math.max(0, 80 - dist) * 0.1; // dorongan lebih kuat dekat kursor
+
+        const angleX = (dx / dist) * pushStrength;
+        const angleY = (dy / dist) * pushStrength;
+
+        star.style.transform = `translate(${angleX}px, ${angleY}px)`;
+      });
+    });
+  </script>
+  <!--Script mouse trail-->
+    <script>
+    // Mouse trail
+    document.addEventListener('mousemove', (e) => {
+      const trail = document.createElement('div');
+      trail.style.position = 'fixed';
+      trail.style.width = '6px';
+      trail.style.height = '6px';
+      trail.style.borderRadius = '50%';
+      trail.style.background = 'white';
+      trail.style.left = e.clientX + 'px';
+      trail.style.top = e.clientY + 'px';
+      trail.style.pointerEvents = 'none';
+      trail.style.opacity = '0.8';
+      trail.style.transform = 'translate(-50%, -50%)';
+      trail.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+      document.body.appendChild(trail);
+
+      requestAnimationFrame(() => {
+        trail.style.opacity = '0';
+        trail.style.transform = 'translate(-50%, -50%) scale(3)';
+      });
+
+      setTimeout(() => trail.remove(), 500);
+    });
+  </script>
 </body>
 </html>
